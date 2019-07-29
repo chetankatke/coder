@@ -1,0 +1,28 @@
+#!/bin/sh
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Install coders"
+BUILD_DIR=$1
+VENDOR_DIR="vendor"
+FILE="code-server1.1156-vsc1.33.1-linux-x64"
+DOWNLOAD_URL="https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/$FILE.tar.bz2"
+
+echo "DOWNLOAD_URL = " $DOWNLOAD_URL | indent
+
+cd $BUILD_DIR
+mkdir -p $VENDOR_DIR
+cd $VENDOR_DIR
+mkdir -p coders
+cd coders
+wget -q $DOWNLOAD_URL
+tar jxf $FILE.tar.bz2
+mv $FILE/* .
+rm -rf $FILE $FILE.tar.bz2
+
+echo "exporting PATH" | indent
+PROFILE_PATH="$BUILD_DIR/.profile.d/coders.sh"
+mkdir -p $(dirname $PROFILE_PATH)
+echo 'export PATH="$PATH:${HOME}/vendor/coders"' >> $PROFILE_PATH
